@@ -8,9 +8,10 @@ import java.util.Random;
 /**
  * find3NAESAT driver class
  * 
- * This class houses the main method for this program, as well as file handling, CNFFormula parsing, and recursive backtracking/helper methods.
+ * This class houses the main method for this program, as well as file handling,
+ * CNFFormula parsing, and recursive backtracking/helper methods.
  */
-public class find3NAESAT {
+public class Find3NAESAT {
     /**
      * Main method
      * 
@@ -18,10 +19,16 @@ public class find3NAESAT {
      * @author Andrew Ott
      */
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println(
+                    "Usage: java Find3NAESAT <input_file>\n    where input_file is the input file to read 3CNFs from.");
+            System.exit(1);
+        }
+
         // Random for generating random assignments
         Random random = new Random();
         // command line file name handling
-        String fileName = "cnfs2025.txt";
+        String fileName = args[0];
         File file = new File(fileName);
 
         System.out.println("** Find 3NAESAT in " + fileName + " (by backtracking):\n");
@@ -137,10 +144,8 @@ public class find3NAESAT {
                 temp = temp.substring(0, temp.length() - 1);
                 System.out.println(temp + "\n");
             }
-        } catch (
-
-        FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
         }
     }
 
@@ -236,7 +241,7 @@ public class find3NAESAT {
      * or until the method has exhausted all possible assignments and fails to
      * produce a satisfiable result
      * 
-     * @param formula - A given CNFFormula
+     * @param formula      - A given CNFFormula
      * @param literalIndex - The index of the currently focused literal
      * @return If the CNFFormula is satisfiable
      */
@@ -262,135 +267,135 @@ public class find3NAESAT {
         // if neither assignment works we backtrack
         return false;
     }
-}
 
-/**
- * Clause Class
- * 
- * Represents a single clause within the CNFFormula.
- * 
- * @author Andrew Ott
- */
-class Clause {
-    private int[] literals;
+    /**
+     * Clause Class
+     * 
+     * Represents a single clause within the CNFFormula.
+     * 
+     * @author Andrew Ott
+     */
+    public static class Clause {
+        private int[] literals;
 
-    Clause(int[] literals) {
-        this.literals = literals;
-    }
+        Clause(int[] literals) {
+            this.literals = literals;
+        }
 
-    public int getLiteral(int index) {
-        return literals[index];
+        public int getLiteral(int index) {
+            return literals[index];
+        }
+
+        /**
+         * Clause isNAESatisfied method
+         * 
+         * checks to see that the given clause is satisfied.
+         * 
+         * @param assignment
+         * @return True if the clause satisfies NAESAT, false otherwise
+         */
+        public boolean isNAESatisfied(boolean[] assignment) {
+            boolean hasTrue = false;
+            boolean hasFalse = false;
+
+            for (int i = 0; i < literals.length; i++) {
+                int lit = getLiteral(i);
+                int index = Math.abs(lit);
+                boolean value = assignment[index];
+
+                // If literal is negative, switch the boolean
+                if (lit < 0) {
+                    value = !value;
+                }
+
+                if (value) {
+                    hasTrue = true;
+                } else {
+                    hasFalse = true;
+                }
+
+                // Early termination if the clause has both true and false
+                if (hasTrue && hasFalse) {
+                    return true;
+                }
+            }
+
+            return hasTrue && hasFalse;
+        }
+
     }
 
     /**
-     * Clause isNAESatisfied method
+     * CNFFormula class
      * 
-     * checks to see that the given clause is satisfied.
+     * Represents a given CNFFormula; it's number of clauses and literals, the
+     * assignment of each literal, as well as the individual clauses.
      * 
-     * @param assignment
-     * @return True if the clause satisfies NAESAT, false otherwise
+     * @author Andrew Ott
      */
-    public boolean isNAESatisfied(boolean[] assignment) {
-        boolean hasTrue = false;
-        boolean hasFalse = false;
+    public static class CNFFormula {
+        private int numLiterals;
+        private int numClauses;
+        // Holds the boolean value for each literal
+        private boolean[] assignment;
+        // Array list of each clause
+        private ArrayList<Clause> clauses;
 
-        for (int i = 0; i < literals.length; i++) {
-            int lit = getLiteral(i);
-            int index = Math.abs(lit);
-            boolean value = assignment[index];
+        CNFFormula() {
+            this.numLiterals = 0;
+            this.numClauses = 0;
 
-            // If literal is negative, switch the boolean
-            if (lit < 0) {
-                value = !value;
-            }
-
-            if (value) {
-                hasTrue = true;
-            } else {
-                hasFalse = true;
-            }
-
-            // Early termination if the clause has both true and false
-            if (hasTrue && hasFalse) {
-                return true;
-            }
+            clauses = new ArrayList<Clause>();
         }
 
-        return hasTrue && hasFalse;
-    }
-
-}
-
-/**
- * CNFFormula class
- * 
- * Represents a given CNFFormula; it's number of clauses and literals, the
- * assignment of each literal, as well as the individual clauses.
- * 
- * @author Andrew Ott
- */
-class CNFFormula {
-    private int numLiterals;
-    private int numClauses;
-    // Holds the boolean value for each literal
-    private boolean[] assignment;
-    // Array list of each clause
-    private ArrayList<Clause> clauses;
-
-    CNFFormula() {
-        this.numLiterals = 0;
-        this.numClauses = 0;
-
-        clauses = new ArrayList<Clause>();
-    }
-
-    void addClause(Clause newClause) {
-        clauses.add(newClause);
-        numClauses++;
-    }
-
-    public int getNumLiterals() {
-        return numLiterals;
-    }
-
-    public void setNumLiterals(int numLiterals) {
-        this.numLiterals = numLiterals;
-    }
-
-    public int getNumClauses() {
-        return numClauses;
-    }
-
-    public ArrayList<Clause> getClauses() {
-        return clauses;
-    }
-
-    public void setAssignment(boolean[] assignment) {
-        this.assignment = assignment;
-    }
-
-    public void setAssignment(int varIndex, boolean value) {
-        assignment[varIndex] = value;
-    }
-
-    public boolean getAssignment(int varIndex) {
-        return assignment[varIndex];
-    }
-
-    /**
-     * CNFFormula isNAESatisfied method
-     * 
-     * Calls the Clause isNAESatisfied method on all clauses in the clauses
-     * ArrayList.
-     * 
-     * @return True if all clauses are NAESAT, false otherwise.
-     */
-    public boolean isNAESatisfied() {
-        for (Clause clause : clauses) {
-            if (!clause.isNAESatisfied(assignment)) {
-                return false;
-            }
+        void addClause(Clause newClause) {
+            clauses.add(newClause);
+            numClauses++;
         }
-        return true;
+
+        public int getNumLiterals() {
+            return numLiterals;
+        }
+
+        public void setNumLiterals(int numLiterals) {
+            this.numLiterals = numLiterals;
+        }
+
+        public int getNumClauses() {
+            return numClauses;
+        }
+
+        public ArrayList<Clause> getClauses() {
+            return clauses;
+        }
+
+        public void setAssignment(boolean[] assignment) {
+            this.assignment = assignment;
+        }
+
+        public void setAssignment(int varIndex, boolean value) {
+            assignment[varIndex] = value;
+        }
+
+        public boolean getAssignment(int varIndex) {
+            return assignment[varIndex];
+        }
+
+        /**
+         * CNFFormula isNAESatisfied method
+         * 
+         * Calls the Clause isNAESatisfied method on all clauses in the clauses
+         * ArrayList.
+         * 
+         * @return True if all clauses are NAESAT, false otherwise.
+         */
+        public boolean isNAESatisfied() {
+            for (Clause clause : clauses) {
+                if (!clause.isNAESatisfied(assignment)) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
