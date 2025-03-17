@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Find3Color {
 
     /**
-     * Represents a graph with an adjacency matrix.
+     * Represents an undirected graph with an adjacency matrix.
      */
     public static class UndirectedGraph {
         private final static int PRINT_THRESHOLD = 20;
@@ -31,7 +31,7 @@ public class Find3Color {
             /**
              * Converts the enum to a string.
              * 
-             * @return The string representation of a Color for printing a Graph.
+             * @return The string representation of a Color for printing an UndirectedGraph.
              */
             @Override
             public String toString() {
@@ -50,7 +50,7 @@ public class Find3Color {
         }
 
         /**
-         * Creates a new Graph with this adjacency matrix.
+         * Creates a new UndirectedGraph with this adjacency matrix.
          *
          * @param adjacencyMatrix The adjacency matrix.
          */
@@ -116,7 +116,12 @@ public class Find3Color {
 
                 String colorPlan = "  ";
                 for (int i = 0; i < this.vertexColors.size(); i++) {
-                    colorPlan += vertexColors.get(i) + " "; // the last element will also have a space after it
+                    colorPlan += vertexColors.get(i);
+
+                    // add space
+                    if (i != this.vertexColors.size() - 1) {
+                        colorPlan += " ";
+                    }
                 }
                 System.out.println(colorPlan);
 
@@ -139,7 +144,7 @@ public class Find3Color {
         }
 
         /**
-         * Checks that 3 color is satisfied for this Graph.
+         * Checks that 3 color is satisfied for this UndirectedGraph.
          * 3 Color is satisfied when no two vertices of the same color are adjacent to
          * one another.
          * 
@@ -171,23 +176,24 @@ public class Find3Color {
         }
 
         /**
-         * FIXME: It is likely that we want to rename this function but the general idea
-         * is to do a modified depth-first search where we will visit every node and
-         * color one, and if the node that we color with our current color touches
-         * another of the same color, then we will backtrack on this node (or even back
-         * to a previous node) to change the color of the node to its next value. I
-         * believe
-         * that the only point where we know that we cannot do a 3-color with just
-         * backtracking is if we go through the entire algorithm and do not find a
-         * solution, which means that this would take a long time to find a
-         * non-solution. There are likely better ways to find out that we a graph cannot
-         * be 3-colored, but that is probably not the scope of this assignment.
+         * Finds if there is a solution to the 3 Color problem with this
+         * UndirectedGraph. This is done by finding some solution where each vertex in
+         * the graph is assigned one of three colors (red, blue, and green), and no two
+         * vertices with the same color are allowed to be adjacent to one another.
+         * 
+         * @return True if the graph is 3 colorable, false otherwise.
          */
-        public boolean convertTo3Color() {
-            return convertTo3ColorHelper(0);
+        public boolean isConvertableTo3Color() {
+            return isConvertableTo3ColorHelper(0);
         }
 
-        private boolean convertTo3ColorHelper(int vertexIndex) {
+        /**
+         * Helper function for finding solution to 3 Color problem.
+         * 
+         * @param vertexIndex The current vertex index into the vertexColors ArrayList.
+         * @return True if the graph is 3 colorable, false otherwise.
+         */
+        private boolean isConvertableTo3ColorHelper(int vertexIndex) {
             // base case: we have assigned a color to every vertex in the graph
             if (vertexIndex == this.numVertices) {
                 // see if this assignment satisfies 3Color
@@ -196,21 +202,21 @@ public class Find3Color {
 
             // try setting this vertex to be green
             this.vertexColors.set(vertexIndex, Color.GREEN);
-            if (convertTo3ColorHelper(vertexIndex + 1)) { // recurse
+            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
                 // we found a solution
                 return true;
             }
 
             // try setting this vertex to be blue
             this.vertexColors.set(vertexIndex, Color.BLUE);
-            if (convertTo3ColorHelper(vertexIndex + 1)) { // recurse
+            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
                 // we found a solution
                 return true;
             }
 
             // try setting this vertex to be green
             this.vertexColors.set(vertexIndex, Color.RED);
-            if (convertTo3ColorHelper(vertexIndex + 1)) { // recurse
+            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
                 // we found a solution
                 return true;
             }
@@ -231,19 +237,20 @@ public class Find3Color {
         ArrayList<UndirectedGraph> graphs = readUndirectedGraphsFromFile(args[0]);
 
         for (int i = 0; i < graphs.size(); i++) {
+            // see if all graphs are able to be 3 colorable
             UndirectedGraph curGraph = graphs.get(i);
             long startTime = System.currentTimeMillis();
-            boolean is3Colorable = curGraph.convertTo3Color();
+            boolean is3Colorable = curGraph.isConvertableTo3Color();
             long elapsedTime = System.currentTimeMillis() - startTime;
             curGraph.printGraph(elapsedTime, is3Colorable);
         }
     }
 
     /**
-     * Reads a graph from a file and
+     * Reads graphs from file and saves them as UndirectedGraph objects.
      * 
-     * @param fileName
-     * @return
+     * @param fileName The name of the file to read from.
+     * @return The ArrayList of UndirectedGraph objects read from file.
      */
     public static ArrayList<UndirectedGraph> readUndirectedGraphsFromFile(String fileName) {
         ArrayList<UndirectedGraph> output = new ArrayList<>();
