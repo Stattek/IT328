@@ -1,0 +1,43 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch with Arguments Prompt",
+            "request": "launch",
+            "mainClass": "",
+            "args": "${command:SpecifyProgramArgs}"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Find3Color",
+            "request": "launch",
+            "mainClass": "Find3Color",
+            "projectName": "IT328_739f37ca",
+            "args": "graphs2025.txt"
+        },
+        {
+            "type": "java",
+            "name": "Find3NAESAT",
+            "request": "launch",
+            "mainClass": "Find3NAESAT",
+            "projectName": "IT328_739f37ca"
+        },
+        {
+            "type": "java",
+            "name": "Find3NAESAT3Color",
+            "request": "launch",
+            "mainClass": "Find3NAESAT3Color",
+            "projectName": "IT328_739f37ca"
+        }
+    ]
+}
