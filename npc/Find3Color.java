@@ -1,14 +1,23 @@
+
+/**
+ * Author: David Slay
+ * Summary: Program to find out if undirected graphs can be 3-colored.
+ */
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * Driver class to decide if an undirected graph G: (V,E) can be 3-colored.
+ * 
+ * @author David Slay
  */
 public class Find3Color {
 
     /**
      * Represents an undirected graph with an adjacency matrix.
+     * 
+     * @author David Slay
      */
     public static class UndirectedGraph {
         private final static int PRINT_THRESHOLD = 20;
@@ -21,6 +30,8 @@ public class Find3Color {
 
         /**
          * Colors that vertices in the graph can be.
+         * 
+         * @author David Slay
          */
         public enum Color {
             RED,
@@ -32,6 +43,7 @@ public class Find3Color {
              * Converts the enum to a string.
              * 
              * @return The string representation of a Color for printing an UndirectedGraph.
+             * @author David Slay
              */
             @Override
             public String toString() {
@@ -53,6 +65,7 @@ public class Find3Color {
          * Creates a new UndirectedGraph with this adjacency matrix.
          *
          * @param adjacencyMatrix The adjacency matrix.
+         * @author David Slay
          */
         public UndirectedGraph(ArrayList<ArrayList<Integer>> adjacencyMatrix) {
             this.graphNum = UndirectedGraph.nextGraphNum;
@@ -73,6 +86,7 @@ public class Find3Color {
          * Counts the number of edges in the graph.
          * 
          * @return The number of edges in the graph.
+         * @author David Slay
          */
         private int countEdges() {
             int numEdgesOut = 0;
@@ -94,6 +108,7 @@ public class Find3Color {
          * 
          * @param timeElapsedMillis The time elapsed to generate a 3-color graph.
          * @param is3Colorable      If the graph is 3Colorable.
+         * @author David Slay
          */
         private void printGraph(long timeElapsedMillis, boolean is3Colorable) {
             System.out.print(
@@ -149,6 +164,7 @@ public class Find3Color {
          * one another.
          * 
          * @return True if 3 Color is satisfied, false otherwise.
+         * @author David Slay
          */
         public boolean is3ColorSatisfied() {
             boolean isSatisfied = true; // satisfied until proven unsatisfied
@@ -182,6 +198,7 @@ public class Find3Color {
          * vertices with the same color are allowed to be adjacent to one another.
          * 
          * @return True if the graph is 3 colorable, false otherwise.
+         * @author David Slay
          */
         public boolean isConvertableTo3Color() {
             return isConvertableTo3ColorHelper(0);
@@ -192,6 +209,7 @@ public class Find3Color {
          * 
          * @param vertexIndex The current vertex index into the vertexColors ArrayList.
          * @return True if the graph is 3 colorable, false otherwise.
+         * @author David Slay
          */
         private boolean isConvertableTo3ColorHelper(int vertexIndex) {
             // base case: we have assigned a color to every vertex in the graph
@@ -252,6 +270,7 @@ public class Find3Color {
      * 
      * @param fileName The name of the file to read from.
      * @return The ArrayList of UndirectedGraph objects read from file.
+     * @author David Slay
      */
     public static ArrayList<UndirectedGraph> readUndirectedGraphsFromFile(String fileName) {
         ArrayList<UndirectedGraph> output = new ArrayList<>();
