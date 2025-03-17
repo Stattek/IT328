@@ -10,7 +10,7 @@ public class Find3Color {
     /**
      * Represents a graph with an adjacency matrix.
      */
-    public static class Graph {
+    public static class UndirectedGraph {
         private final static int PRINT_THRESHOLD = 20;
         private static int nextGraphNum = 1; // start at 1
         private int graphNum;
@@ -54,14 +54,24 @@ public class Find3Color {
          *
          * @param adjacencyMatrix The adjacency matrix.
          */
-        public Graph(ArrayList<ArrayList<Integer>> adjacencyMatrix) {
-            this.graphNum = Graph.nextGraphNum;
-            Graph.nextGraphNum++; // increment the next graph number
+        public UndirectedGraph(ArrayList<ArrayList<Integer>> adjacencyMatrix) {
+            this.graphNum = UndirectedGraph.nextGraphNum;
+            UndirectedGraph.nextGraphNum++; // increment the next graph number
             this.adjacencyMatrix = adjacencyMatrix;
             this.numVertices = adjacencyMatrix.size();
 
-            // TODO: find the number of edges
-            this.numEdges = 0;
+            int numEdges = 0;
+            for (int i = 0; i < this.numVertices; i++) {
+
+                // count all edges that are on the top right side of the adjacency matrix, as
+                // this graph should be undirected
+                for (int j = i + 1; j < this.numVertices; j++) {
+                    if (this.adjacencyMatrix.get(i).get(j) > 0) {
+                        numEdges++;
+                    }
+                }
+            }
+            this.numEdges = numEdges;
             this.vertexColors = new ArrayList<>();
 
             // create colors list
@@ -135,10 +145,10 @@ public class Find3Color {
         }
 
         // read the graph from the file and save it
-        ArrayList<Graph> graphs = readUndirectedGraphsFromFile(args[0]);
+        ArrayList<UndirectedGraph> graphs = readUndirectedGraphsFromFile(args[0]);
 
         for (int i = 0; i < graphs.size(); i++) {
-            Graph curGraph = graphs.get(i);
+            UndirectedGraph curGraph = graphs.get(i);
             long startTime = System.currentTimeMillis();
             boolean is3Colorable = curGraph.convertTo3Color();
             long elapsedTime = System.currentTimeMillis() - startTime;
@@ -152,8 +162,8 @@ public class Find3Color {
      * @param fileName
      * @return
      */
-    public static ArrayList<Graph> readUndirectedGraphsFromFile(String fileName) {
-        ArrayList<Graph> output = new ArrayList<>();
+    public static ArrayList<UndirectedGraph> readUndirectedGraphsFromFile(String fileName) {
+        ArrayList<UndirectedGraph> output = new ArrayList<>();
         File inputFile = new File(fileName);
         try {
             Scanner fileScanner = new Scanner(inputFile);
@@ -212,7 +222,7 @@ public class Find3Color {
                 }
 
                 // add this graph to the output
-                output.add(new Graph(currentAdjacencyMatrix));
+                output.add(new UndirectedGraph(currentAdjacencyMatrix));
             }
 
             fileScanner.close();
