@@ -12,10 +12,19 @@ public class Find3Color {
     /**
      * Represents a graph with an adjacency matrix.
      */
-    public class Graph {
+    public static class Graph {
         private ArrayList<ArrayList<Integer>> adjacencyMatrix;
         private int numVertices;
-        private int numEdges;
+        private ArrayList<Color> vertexColors; // represents each vertex and its color (1, 2, or 3)
+
+        /**
+         * Colors that vertices in the graph can be.
+         */
+        public enum Color {
+            Red,
+            Blue,
+            Green,
+        }
 
         /**
          * Creates a new Graph with this adjacency matrix.
@@ -24,15 +33,14 @@ public class Find3Color {
          */
         public Graph(ArrayList<ArrayList<Integer>> adjacencyMatrix) {
             this.adjacencyMatrix = adjacencyMatrix;
-        }
+            this.numVertices = adjacencyMatrix.size();
+            this.vertexColors = new ArrayList<>();
 
-        /**
-         * Creates a new Graph from an adjacency matrix string.
-         * 
-         * @param adjacencyMatrixString
-         */
-        public Graph(String adjacencyMatrixString) {
-            
+            // create colors list
+            for (int i = 0; i < adjacencyMatrix.size(); i++) {
+                // every vertex starts off red
+                this.vertexColors.add(Color.Red);
+            }
         }
 
         /**
@@ -48,8 +56,7 @@ public class Find3Color {
          * non-solution. There are likely better ways to find out that we a graph cannot
          * be 3-colored, but that is probably not the scope of this assignment.
          */
-        public void depthFirstSearch() {
-
+        public void find3Color() {
         }
     }
 
@@ -61,7 +68,7 @@ public class Find3Color {
         }
 
         // read the graph from the file and save it
-        ArrayList<Graph> graphs = readGraphFromFile(args[0]);
+        ArrayList<Graph> graphs = readUndirectedGraphsFromFile(args[0]);
     }
 
     /**
@@ -70,18 +77,82 @@ public class Find3Color {
      * @param fileName
      * @return
      */
-    public static ArrayList<Graph> readGraphFromFile(String fileName) {
+    public static ArrayList<Graph> readUndirectedGraphsFromFile(String fileName) {
         ArrayList<Graph> output = new ArrayList<>();
         File inputFile = new File(fileName);
         try {
             Scanner fileScanner = new Scanner(inputFile);
             while (fileScanner.hasNextLine()) {
-                System.out.println(fileScanner.nextLine());
+
+                // read the next graph
+                String currentLine = fileScanner.nextLine();
+                int numVertices = Integer.parseInt(currentLine);
+
+                // break if we read a 0 for the graph number of vertices
+                if (numVertices == 0) {
+                    break;
+                }
+
+                ArrayList<ArrayList<Integer>> currentAdjacencyMatrix = new ArrayList<>();
+
+                // iterate through rows
+                for (int i = 0; i < numVertices; i++) {
+                    if (!fileScanner.hasNextLine()) {
+                        System.err.println(
+                                "Error: File does not have expected row in graph " + (output.size() + 1)
+                                        + " for vertex " + i);
+                        System.exit(1);
+                    }
+
+                    currentLine = fileScanner.nextLine();
+                    // split this string by spaces so we can see if it is valid or not
+                    String curRowValues[] = currentLine.split(" ");
+
+                    if (curRowValues.length != numVertices) {
+                        System.err.println(
+                                "Error: Invalid number of columns, expected " + numVertices + " but got "
+                                        + curRowValues.length);
+                        System.exit(1);
+                    }
+
+                    // holds the row of the adjacency matrix
+                    ArrayList<Integer> currentRow = new ArrayList<>();
+
+                    // iterate through the columns
+                    for (int j = 0; j < curRowValues.length; j++) {
+                        // try to parse the values
+                        try {
+                            int currentVal = Integer.parseInt(curRowValues[j]);
+                            // push this element of the adjacency matrix to the current row
+                            currentRow.add(currentVal);
+                        } catch (NumberFormatException nfe) {
+                            System.err.println("Error: File does not have expected data at graph " + (output.size() + 1)
+                                    + ", row " + i + ", column " + j);
+                            System.exit(1);
+                        }
+                    }
+
+                    // push this row to the adjacency matrix
+                    currentAdjacencyMatrix.add(currentRow);
+                }
+
+                // add this graph to the output
+                output.add(new Graph(currentAdjacencyMatrix));
+
+                // DEBUG: print the array that we created
+                System.out.println("DEBUG: array we just pulled");
+                for (int i = 0; i < currentAdjacencyMatrix.size(); i++) {
+                    for (int j = 0; j < currentAdjacencyMatrix.size(); j++) {
+                        System.out.print(currentAdjacencyMatrix.get(i).get(j) + " ");
+                    }
+                    System.out.println();
+                }
             }
 
             fileScanner.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error: problem ocurred when reading from file. Is the file properly formatted?");
+            System.exit(1);
         }
 
         return output;
