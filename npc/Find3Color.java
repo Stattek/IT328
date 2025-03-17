@@ -228,8 +228,9 @@ public class Find3Color {
 
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.err.println("Usage: "
-                    + " <input_file>\n    where input_file is the input graph file to find a 3 color graph of.");
+            System.err.println(
+                    "Usage: java Find3Color <input_file>\n    where input_file is the input file to read 3CNFs from.");
+
             System.exit(1);
         }
 

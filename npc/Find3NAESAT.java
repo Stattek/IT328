@@ -19,10 +19,16 @@ public class Find3NAESAT {
      * @author Andrew Ott
      */
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println(
+                    "Usage: java Find3NAESAT <input_file>\n    where input_file is the input file to read 3CNFs from.");
+            System.exit(1);
+        }
+
         // Random for generating random assignments
         Random random = new Random();
         // command line file name handling
-        String fileName = "cnfs2025.txt";
+        String fileName = args[0];
         File file = new File(fileName);
 
         System.out.println("** Find 3NAESAT in " + fileName + " (by backtracking):\n");
