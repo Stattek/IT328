@@ -11,17 +11,42 @@ public class Find3Color {
      * Represents a graph with an adjacency matrix.
      */
     public static class Graph {
+        private final static int PRINT_THRESHOLD = 20;
+        private static int nextGraphNum = 1; // start at 1
+        private int graphNum;
         private ArrayList<ArrayList<Integer>> adjacencyMatrix;
         private int numVertices;
+        private int numEdges;
         private ArrayList<Color> vertexColors; // represents each vertex and its color (1, 2, or 3)
 
         /**
          * Colors that vertices in the graph can be.
          */
         public enum Color {
-            Red,
-            Blue,
-            Green,
+            RED,
+            BLUE,
+            GREEN,
+            ;
+
+            /**
+             * Converts the enum to a string.
+             * 
+             * @return The string representation of a Color for printing a Graph.
+             */
+            @Override
+            public String toString() {
+                switch (this) {
+                    case RED:
+                        return "R";
+                    case BLUE:
+                        return "B";
+                    case GREEN:
+                        return "G";
+                    default:
+                        // this should never happen
+                        return "N"; // NULL color
+                }
+            }
         }
 
         /**
@@ -30,14 +55,57 @@ public class Find3Color {
          * @param adjacencyMatrix The adjacency matrix.
          */
         public Graph(ArrayList<ArrayList<Integer>> adjacencyMatrix) {
+            this.graphNum = Graph.nextGraphNum;
+            Graph.nextGraphNum++; // increment the next graph number
             this.adjacencyMatrix = adjacencyMatrix;
             this.numVertices = adjacencyMatrix.size();
+
+            // TODO: find the number of edges
+            this.numEdges = 0;
             this.vertexColors = new ArrayList<>();
 
             // create colors list
             for (int i = 0; i < adjacencyMatrix.size(); i++) {
                 // every vertex starts off red
-                this.vertexColors.add(Color.Red);
+                this.vertexColors.add(Color.RED);
+            }
+        }
+
+        /**
+         * Prints a graph with its information.
+         * 
+         * @param timeElapsedMillis The time elapsed to generate a 3-color graph.
+         * @param is3Colorable      If the graph is 3Colorable.
+         */
+        private void printGraph(long timeElapsedMillis, boolean is3Colorable) {
+            System.out.print(
+                    "G" + this.graphNum + ":(|V|=" + this.numVertices + ",|E|=" + this.numEdges + ") ");
+            if (this.numVertices >= PRINT_THRESHOLD) {
+                String colorPlan = "";
+
+                for (int i = 0; i < this.vertexColors.size(); i++) {
+                    colorPlan += vertexColors.get(i) + " "; // the last element will also have a space after it
+                }
+
+                // print out this color plan since we are at or above the print threshold
+                System.out.print(colorPlan);
+            }
+            System.out.println("(ms=" + timeElapsedMillis + ")");
+
+            // only print the rest of this if we are not at or above the print threshold
+            if (this.numVertices < PRINT_THRESHOLD) {
+                for (int i = 0; i < this.adjacencyMatrix.size(); i++) {
+                    if (i == 0) {
+                        for (int j = 0; j < vertexColors.size(); j++) {
+                            vertexColors.get(j);
+                        }
+                        System.out.println();
+                    }
+                    for (int j = 0; j < this.adjacencyMatrix.size(); j++) {
+                        System.out.print(this.adjacencyMatrix.get(i).get(j) + " ");
+                    }
+                    System.out.println();
+                }
             }
         }
 
@@ -54,7 +122,8 @@ public class Find3Color {
          * non-solution. There are likely better ways to find out that we a graph cannot
          * be 3-colored, but that is probably not the scope of this assignment.
          */
-        public void find3Color() {
+        public boolean convertTo3Color() {
+            return true; // DEBUG: replace
         }
     }
 
@@ -67,6 +136,14 @@ public class Find3Color {
 
         // read the graph from the file and save it
         ArrayList<Graph> graphs = readUndirectedGraphsFromFile(args[0]);
+
+        for (int i = 0; i < graphs.size(); i++) {
+            Graph curGraph = graphs.get(i);
+            long startTime = System.currentTimeMillis();
+            boolean is3Colorable = curGraph.convertTo3Color();
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            curGraph.printGraph(elapsedTime, is3Colorable);
+        }
     }
 
     /**
@@ -136,15 +213,6 @@ public class Find3Color {
 
                 // add this graph to the output
                 output.add(new Graph(currentAdjacencyMatrix));
-
-                // DEBUG: print the array that we created
-                System.out.println("DEBUG: array we just pulled");
-                for (int i = 0; i < currentAdjacencyMatrix.size(); i++) {
-                    for (int j = 0; j < currentAdjacencyMatrix.size(); j++) {
-                        System.out.print(currentAdjacencyMatrix.get(i).get(j) + " ");
-                    }
-                    System.out.println();
-                }
             }
 
             fileScanner.close();
