@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 /**
  * Driver class to decide if an undirected graph G: (V,E) can be 3-colored.
- * 
- * TODO: use an adjacency matrix or adjacency list to represent the graph
  */
 public class Find3Color {
 
