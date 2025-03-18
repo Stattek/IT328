@@ -26,7 +26,7 @@ public class Find3Color {
         private ArrayList<ArrayList<Integer>> adjacencyMatrix;
         private int numVertices;
         private int numEdges;
-        private ArrayList<Color> vertexColors; // represents each vertex and its color (1, 2, or 3)
+        private ArrayList<Color> vertexColors; // represents each vertex and its color
 
         /**
          * Colors that vertices in the graph can be.
@@ -148,9 +148,13 @@ public class Find3Color {
                     // iterate through columns
                     for (int j = 0; j < this.adjacencyMatrix.size(); j++) {
                         if (i == j) {
-                            System.out.print("X ");
+                            System.out.print("X");
                         } else {
-                            System.out.print(this.adjacencyMatrix.get(i).get(j) + " ");
+                            System.out.print(this.adjacencyMatrix.get(i).get(j));
+                        }
+
+                        if (j != this.adjacencyMatrix.size() - 1) {
+                            System.out.print(" ");
                         }
                     }
                     System.out.println();
@@ -247,7 +251,7 @@ public class Find3Color {
     public static void main(String[] args) {
         if (args.length != 1) {
             System.err.println(
-                    "Usage: java Find3Color <input_file>\n    where input_file is the input file to read 3CNFs from.");
+                    "Usage: java Find3Color <input_file>\n    where `input_file` is the input file to read 3CNFs from.");
 
             System.exit(1);
         }
