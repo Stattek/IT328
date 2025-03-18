@@ -23,7 +23,7 @@
             "request": "launch",
             "mainClass": "Find3Color",
             "projectName": "IT328_739f37ca",
-            "args": "graphs2025.txt"
+            "args": "debug_graph.txt"
         },
         {
             "type": "java",
