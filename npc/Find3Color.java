@@ -19,14 +19,14 @@ public class Find3Color {
      * 
      * @author David Slay
      */
-    public static class UndirectedGraph {
+    private static class UndirectedGraph {
         private final static int PRINT_THRESHOLD = 20;
         private static int nextGraphNum = 1; // start at 1
         private int graphNum;
-        private ArrayList<ArrayList<Integer>> adjacencyMatrix;
+        private int[][] adjacencyMatrix;
         private int numVertices;
         private int numEdges;
-        private ArrayList<Color> vertexColors; // represents each vertex and its color
+        private Color[] vertexColors; // represents each vertex and its color
 
         /**
          * Colors that vertices in the graph can be.
@@ -37,6 +37,7 @@ public class Find3Color {
             RED,
             BLUE,
             GREEN,
+            NONE,
             ;
 
             /**
@@ -67,18 +68,18 @@ public class Find3Color {
          * @param adjacencyMatrix The adjacency matrix.
          * @author David Slay
          */
-        public UndirectedGraph(ArrayList<ArrayList<Integer>> adjacencyMatrix) {
+        public UndirectedGraph(int[][] adjacencyMatrix) {
             this.graphNum = UndirectedGraph.nextGraphNum;
             UndirectedGraph.nextGraphNum++; // increment the next graph number
             this.adjacencyMatrix = adjacencyMatrix;
-            this.numVertices = adjacencyMatrix.size();
+            this.numVertices = adjacencyMatrix.length;
             this.numEdges = countEdges();
-            this.vertexColors = new ArrayList<>();
+            this.vertexColors = new Color[this.numVertices];
 
-            // create colors list
-            for (int i = 0; i < adjacencyMatrix.size(); i++) {
-                // every vertex starts off red
-                this.vertexColors.add(Color.RED);
+            // initialize colors array
+            for (int i = 0; i < adjacencyMatrix.length; i++) {
+                // every vertex starts off with no color
+                this.vertexColors[i] = Color.NONE;
             }
         }
 
@@ -94,7 +95,7 @@ public class Find3Color {
                 // count all edges that are on the top right side of the adjacency matrix, as
                 // this graph should be undirected
                 for (int j = i + 1; j < this.numVertices; j++) {
-                    if (this.adjacencyMatrix.get(i).get(j) > 0) {
+                    if (this.adjacencyMatrix[i][j] > 0) {
                         numEdgesOut++;
                     }
                 }
@@ -116,8 +117,8 @@ public class Find3Color {
             if (this.numVertices >= PRINT_THRESHOLD && is3Colorable) {
                 // print out this color plan since we are at or above the print threshold
                 String colorPlan = "";
-                for (int i = 0; i < this.vertexColors.size(); i++) {
-                    colorPlan += vertexColors.get(i) + " "; // the last element will also have a space after it
+                for (int i = 0; i < this.vertexColors.length; i++) {
+                    colorPlan += vertexColors[i] + " "; // the last element will also have a space after it
                 }
                 System.out.print(colorPlan);
             } else if (!is3Colorable) {
@@ -128,32 +129,33 @@ public class Find3Color {
 
             // only print the rest of this if we are not at or above the print threshold
             if (this.numVertices < PRINT_THRESHOLD && is3Colorable) {
-
                 String colorPlan = "  ";
-                for (int i = 0; i < this.vertexColors.size(); i++) {
-                    colorPlan += vertexColors.get(i);
+                for (int i = 0; i < this.vertexColors.length; i++) {
+                    colorPlan += vertexColors[i];
 
                     // add space
-                    if (i != this.vertexColors.size() - 1) {
+                    if (i != this.vertexColors.length - 1) {
                         colorPlan += " ";
                     }
                 }
                 System.out.println(colorPlan);
 
                 // iterate through rows
-                for (int i = 0; i < this.adjacencyMatrix.size(); i++) {
+                for (int i = 0; i < this.adjacencyMatrix.length; i++) {
                     // print out the color first
-                    System.out.print(vertexColors.get(i) + " ");
+                    System.out.print(vertexColors[i] + " ");
 
                     // iterate through columns
-                    for (int j = 0; j < this.adjacencyMatrix.size(); j++) {
+                    for (int j = 0; j < this.adjacencyMatrix.length; j++) {
                         if (i == j) {
                             System.out.print("X");
+                        } else if (this.adjacencyMatrix[i][j] != 0) {
+                            System.out.print(this.adjacencyMatrix[i][j]);
                         } else {
-                            System.out.print(this.adjacencyMatrix.get(i).get(j));
+                            System.out.print(" ");
                         }
 
-                        if (j != this.adjacencyMatrix.size() - 1) {
+                        if (j != this.adjacencyMatrix.length - 1) {
                             System.out.print(" ");
                         }
                     }
@@ -163,36 +165,27 @@ public class Find3Color {
         }
 
         /**
-         * Checks that 3 color is satisfied for this UndirectedGraph.
-         * 3 Color is satisfied when no two vertices of the same color are adjacent to
-         * one another.
+         * Checks if the vertex at this index is adjacent to another vertex with the
+         * same color.
          * 
-         * @return True if 3 Color is satisfied, false otherwise.
+         * @param vertexIndex The index of the vertex to check.
+         * @return True if this vertex is adjacent to another vertex of the same color,
+         *         false otherwise.
          * @author David Slay
          */
-        public boolean is3ColorSatisfied() {
-            boolean isSatisfied = true; // satisfied until proven unsatisfied
+        public boolean isAdjacentToSameColor(int vertexIndex) {
+            boolean output = false; // not adjacent
 
             for (int i = 0; i < this.numVertices; i++) {
-                // let's check from the top-right of the adjacency matrix, as we are in an
-                // undirected graph
-                for (int j = i + 1; j < this.numVertices; j++) {
-                    if (this.adjacencyMatrix.get(i).get(j) > 0
-                            && this.vertexColors.get(i) == this.vertexColors.get(j)) {
-                        // this graph does not satisfy 3 color if two adjacent vertices are the same
-                        // color
-                        isSatisfied = false;
-                        break;
-                    }
-                }
-
-                // break if not satisfied
-                if (!isSatisfied) {
+                if (i != vertexIndex && this.adjacencyMatrix[vertexIndex][i] > 0
+                        && this.vertexColors[vertexIndex] == this.vertexColors[i]) {
+                    // adjacent to the same color
+                    output = true;
                     break;
                 }
             }
 
-            return isSatisfied;
+            return output;
         }
 
         /**
@@ -218,32 +211,30 @@ public class Find3Color {
         private boolean isConvertableTo3ColorHelper(int vertexIndex) {
             // base case: we have assigned a color to every vertex in the graph
             if (vertexIndex == this.numVertices) {
-                // see if this assignment satisfies 3Color
-                return is3ColorSatisfied();
+                // we have found an assignment for 3 color
+                return true;
             }
 
             // try setting this vertex to be green
-            this.vertexColors.set(vertexIndex, Color.GREEN);
-            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
-                // we found a solution
+            this.vertexColors[vertexIndex] = Color.GREEN;
+            if (!isAdjacentToSameColor(vertexIndex) && isConvertableTo3ColorHelper(vertexIndex + 1)) {
                 return true;
             }
 
             // try setting this vertex to be blue
-            this.vertexColors.set(vertexIndex, Color.BLUE);
-            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
-                // we found a solution
+            this.vertexColors[vertexIndex] = Color.BLUE;
+            if (!isAdjacentToSameColor(vertexIndex) && isConvertableTo3ColorHelper(vertexIndex + 1)) {
                 return true;
             }
 
             // try setting this vertex to be green
-            this.vertexColors.set(vertexIndex, Color.RED);
-            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
-                // we found a solution
+            this.vertexColors[vertexIndex] = Color.RED;
+            if (!isAdjacentToSameColor(vertexIndex) && isConvertableTo3ColorHelper(vertexIndex + 1)) {
                 return true;
             }
 
             // if none of these assignments work from this point, we backtrack
+            this.vertexColors[vertexIndex] = Color.NONE;
             return false;
         }
     }
@@ -256,11 +247,14 @@ public class Find3Color {
             System.exit(1);
         }
 
+        String fileName = args[0];
+        System.out.println("** Find 3-Color plans for graphs in " + fileName + "\n");
+
         // read the graph from the file and save it
-        ArrayList<UndirectedGraph> graphs = readUndirectedGraphsFromFile(args[0]);
+        ArrayList<UndirectedGraph> graphs = readUndirectedGraphsFromFile(fileName);
 
         for (int i = 0; i < graphs.size(); i++) {
-            // see if all graphs are able to be 3 colorable
+            // see if all graphs are able to be 3 colorableargs
             UndirectedGraph curGraph = graphs.get(i);
             long startTime = System.currentTimeMillis();
             boolean is3Colorable = curGraph.isConvertableTo3Color();
@@ -276,7 +270,7 @@ public class Find3Color {
      * @return The ArrayList of UndirectedGraph objects read from file.
      * @author David Slay
      */
-    public static ArrayList<UndirectedGraph> readUndirectedGraphsFromFile(String fileName) {
+    private static ArrayList<UndirectedGraph> readUndirectedGraphsFromFile(String fileName) {
         ArrayList<UndirectedGraph> output = new ArrayList<>();
         File inputFile = new File(fileName);
         try {
@@ -292,7 +286,7 @@ public class Find3Color {
                     break;
                 }
 
-                ArrayList<ArrayList<Integer>> currentAdjacencyMatrix = new ArrayList<>();
+                int[][] currentAdjacencyMatrix = new int[numVertices][numVertices];
 
                 // iterate through rows
                 for (int i = 0; i < numVertices; i++) {
@@ -314,25 +308,19 @@ public class Find3Color {
                         System.exit(1);
                     }
 
-                    // holds the row of the adjacency matrix
-                    ArrayList<Integer> currentRow = new ArrayList<>();
-
                     // iterate through the columns
                     for (int j = 0; j < curRowValues.length; j++) {
                         // try to parse the values
                         try {
                             int currentVal = Integer.parseInt(curRowValues[j]);
                             // push this element of the adjacency matrix to the current row
-                            currentRow.add(currentVal);
+                            currentAdjacencyMatrix[i][j] = currentVal;
                         } catch (NumberFormatException nfe) {
                             System.err.println("Error: File does not have expected data at graph " + (output.size() + 1)
                                     + ", row " + i + ", column " + j);
                             System.exit(1);
                         }
                     }
-
-                    // push this row to the adjacency matrix
-                    currentAdjacencyMatrix.add(currentRow);
                 }
 
                 // add this graph to the output
