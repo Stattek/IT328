@@ -35,7 +35,7 @@ public class Find3NAESAT3Color {
                 formulaCounter++;
                 long start = System.currentTimeMillis();
 
-                ArrayList<ArrayList<Integer>> adjacencyMatrix = convertToAdjacencyMatrix(formula);
+                int[][] adjacencyMatrix = convertToAdjacencyMatrix(formula);
                 UndirectedGraph graph = new UndirectedGraph(adjacencyMatrix);
                 boolean is3Colorable = graph.isConvertableTo3Color();
                 long end = System.currentTimeMillis();
@@ -46,7 +46,7 @@ public class Find3NAESAT3Color {
                 String temp = "";
 
                 // Calculate the number of vertices and edges
-                int numVertices = adjacencyMatrix.size();
+                int numVertices = adjacencyMatrix.length;
                 int numEdges = graph.countEdges();
 
                 // First line output formatting
@@ -60,14 +60,14 @@ public class Find3NAESAT3Color {
                 if (is3Colorable) {
                     System.out.print("(" + duration + " ms) NAE certificate = [");
                     // Get the color of the base node (X)
-                    UndirectedGraph.Color baseColor = graph.vertexColors.get(0);
+                    UndirectedGraph.Color baseColor = graph.vertexColors[0];
 
                     // Determine the true color
-                    UndirectedGraph.Color trueColor = graph.vertexColors.get(1);
+                    UndirectedGraph.Color trueColor = graph.vertexColors[1];
 
                     // Assign truth values to literals based on their colors
                     for (int i = 1; i <= formula.getNumLiterals(); i++) {
-                        UndirectedGraph.Color literalColor = graph.vertexColors.get(i); // Literal color
+                        UndirectedGraph.Color literalColor = graph.vertexColors[i]; // Literal color
 
                         if (literalColor == trueColor) {
                             formula.setAssignment(i, true); // Literal is true
@@ -170,7 +170,7 @@ public class Find3NAESAT3Color {
      * @param formula The CNFFormula to convert.
      * @return The adjacency matrix representing the graph.
      */
-    public static ArrayList<ArrayList<Integer>> convertToAdjacencyMatrix(CNFFormula formula) {
+    public static int[][] convertToAdjacencyMatrix(CNFFormula formula) {
         int numLiterals = formula.getNumLiterals();
         int numClauses = formula.getNumClauses();
 
@@ -178,13 +178,11 @@ public class Find3NAESAT3Color {
         int totalVertices = 1 + (2 * numLiterals) + (3 * numClauses);
 
         // Initialize adjacency matrix without any edges
-        ArrayList<ArrayList<Integer>> adjacencyMatrix = new ArrayList<>();
+        int[][] adjacencyMatrix = new int[totalVertices][totalVertices];
         for (int i = 0; i < totalVertices; i++) {
-            ArrayList<Integer> row = new ArrayList<>();
             for (int j = 0; j < totalVertices; j++) {
-                row.add(0);
+                adjacencyMatrix[i][j] = 0;
             }
-            adjacencyMatrix.add(row);
         }
 
         // Base node index
@@ -196,15 +194,15 @@ public class Find3NAESAT3Color {
             int negLiteralVertex = 1 + numLiterals + i; // Negation node index
 
             // Connect base node to literal and negation
-            adjacencyMatrix.get(baseNode).set(literalVertex, 1);
-            adjacencyMatrix.get(literalVertex).set(baseNode, 1);
+            adjacencyMatrix[baseNode][literalVertex] = 1;
+            adjacencyMatrix[literalVertex][baseNode] = 1;
 
-            adjacencyMatrix.get(baseNode).set(negLiteralVertex, 1);
-            adjacencyMatrix.get(negLiteralVertex).set(baseNode, 1);
+            adjacencyMatrix[baseNode][negLiteralVertex] = 1;
+            adjacencyMatrix[negLiteralVertex][baseNode] = 1;
 
             // Connect literal to its negation
-            adjacencyMatrix.get(literalVertex).set(negLiteralVertex, 1);
-            adjacencyMatrix.get(negLiteralVertex).set(literalVertex, 1);
+            adjacencyMatrix[literalVertex][negLiteralVertex] = 1;
+            adjacencyMatrix[negLiteralVertex][literalVertex] = 1;
         }
 
         // Clause nodes: Add edges for each clause
@@ -218,14 +216,14 @@ public class Find3NAESAT3Color {
             int clauseNode3 = clauseNode1 + 2;
 
             // Connect clause nodes to form a triangle
-            adjacencyMatrix.get(clauseNode1).set(clauseNode2, 1);
-            adjacencyMatrix.get(clauseNode2).set(clauseNode1, 1);
+            adjacencyMatrix[clauseNode1][clauseNode2] = 1;
+            adjacencyMatrix[clauseNode2][clauseNode1] = 1;
 
-            adjacencyMatrix.get(clauseNode2).set(clauseNode3, 1);
-            adjacencyMatrix.get(clauseNode3).set(clauseNode2, 1);
+            adjacencyMatrix[clauseNode2][clauseNode3] = 1;
+            adjacencyMatrix[clauseNode3][clauseNode2] = 1;
 
-            adjacencyMatrix.get(clauseNode3).set(clauseNode1, 1);
-            adjacencyMatrix.get(clauseNode1).set(clauseNode3, 1);
+            adjacencyMatrix[clauseNode3][clauseNode1] = 1;
+            adjacencyMatrix[clauseNode1][clauseNode3] = 1;
 
             // Connect clause nodes to corresponding literals/negations in Group A
             for (int i = 0; i < 3; i++) {
@@ -240,8 +238,8 @@ public class Find3NAESAT3Color {
 
                 // Connect clause node to corresponding literal/negation
                 int clauseNode = clauseNode1 + i; // Current clause node
-                adjacencyMatrix.get(clauseNode).set(literalVertex, 1);
-                adjacencyMatrix.get(literalVertex).set(clauseNode, 1);
+                adjacencyMatrix[clauseNode][literalVertex] = 1;
+                adjacencyMatrix[literalVertex][clauseNode] = 1;
             }
         }
 
@@ -250,19 +248,20 @@ public class Find3NAESAT3Color {
 
 
     /*---------------------------------------------------------------------------------------------------------------------------------------- */
-
-    /*
-     * 
+    /**
+     * Represents an undirected graph with an adjacency matrix.
+     *
+     * @author David Slay
      */
     public static class UndirectedGraph {
 
         private final static int PRINT_THRESHOLD = 20;
         private static int nextGraphNum = 1; // start at 1
         private int graphNum;
-        private ArrayList<ArrayList<Integer>> adjacencyMatrix;
+        private int[][] adjacencyMatrix;
         private int numVertices;
         private int numEdges;
-        public ArrayList<Color> vertexColors; // represents each vertex and its color (1, 2, or 3)
+        public Color[] vertexColors; // represents each vertex and its color
 
         /**
          * Colors that vertices in the graph can be.
@@ -272,7 +271,8 @@ public class Find3NAESAT3Color {
         public enum Color {
             RED,
             BLUE,
-            GREEN,;
+            GREEN,
+            NONE,;
 
             /**
              * Converts the enum to a string.
@@ -303,18 +303,18 @@ public class Find3NAESAT3Color {
          * @param adjacencyMatrix The adjacency matrix.
          * @author David Slay
          */
-        public UndirectedGraph(ArrayList<ArrayList<Integer>> adjacencyMatrix) {
+        public UndirectedGraph(int[][] adjacencyMatrix) {
             this.graphNum = UndirectedGraph.nextGraphNum;
             UndirectedGraph.nextGraphNum++; // increment the next graph number
             this.adjacencyMatrix = adjacencyMatrix;
-            this.numVertices = adjacencyMatrix.size();
+            this.numVertices = adjacencyMatrix.length;
             this.numEdges = countEdges();
-            this.vertexColors = new ArrayList<>();
+            this.vertexColors = new Color[this.numVertices];
 
-            // create colors list
-            for (int i = 0; i < adjacencyMatrix.size(); i++) {
-                // every vertex starts off red
-                this.vertexColors.add(Color.RED);
+            // initialize colors list
+            for (int i = 0; i < adjacencyMatrix.length; i++) {
+                // every vertex starts off with no color
+                this.vertexColors[i] = Color.NONE;
             }
         }
 
@@ -330,7 +330,7 @@ public class Find3NAESAT3Color {
                 // count all edges that are on the top right side of the adjacency matrix, as
                 // this graph should be undirected
                 for (int j = i + 1; j < this.numVertices; j++) {
-                    if (this.adjacencyMatrix.get(i).get(j) > 0) {
+                    if (this.adjacencyMatrix[i][j] > 0) {
                         numEdgesOut++;
                     }
                 }
@@ -353,8 +353,8 @@ public class Find3NAESAT3Color {
             if (this.numVertices >= PRINT_THRESHOLD && is3Colorable) {
                 // print out this color plan since we are at or above the print threshold
                 String colorPlan = "";
-                for (int i = 0; i < this.vertexColors.size(); i++) {
-                    colorPlan += vertexColors.get(i) + " "; // the last element will also have a space after it
+                for (int i = 0; i < this.vertexColors.length; i++) {
+                    colorPlan += vertexColors[i] + " "; // the last element will also have a space after it
                 }
                 System.out.print(colorPlan);
             } else if (!is3Colorable) {
@@ -367,27 +367,33 @@ public class Find3NAESAT3Color {
             if (this.numVertices < PRINT_THRESHOLD && is3Colorable) {
 
                 String colorPlan = "  ";
-                for (int i = 0; i < this.vertexColors.size(); i++) {
-                    colorPlan += vertexColors.get(i);
+                for (int i = 0; i < this.vertexColors.length; i++) {
+                    colorPlan += vertexColors[i];
 
                     // add space
-                    if (i != this.vertexColors.size() - 1) {
+                    if (i != this.vertexColors.length - 1) {
                         colorPlan += " ";
                     }
                 }
                 System.out.println(colorPlan);
 
                 // iterate through rows
-                for (int i = 0; i < this.adjacencyMatrix.size(); i++) {
+                for (int i = 0; i < this.adjacencyMatrix.length; i++) {
                     // print out the color first
-                    System.out.print(vertexColors.get(i) + " ");
+                    System.out.print(vertexColors[i] + " ");
 
                     // iterate through columns
-                    for (int j = 0; j < this.adjacencyMatrix.size(); j++) {
+                    for (int j = 0; j < this.adjacencyMatrix.length; j++) {
                         if (i == j) {
-                            System.out.print("X ");
+                            System.out.print("X");
+                        } else if (this.adjacencyMatrix[i][j] != 0) {
+                            System.out.print(this.adjacencyMatrix[i][j]);
                         } else {
-                            System.out.print(this.adjacencyMatrix.get(i).get(j) + " ");
+                            System.out.print(" ");
+                        }
+
+                        if (j != this.adjacencyMatrix.length - 1) {
+                            System.out.print(" ");
                         }
                     }
                     System.out.println();
@@ -410,8 +416,8 @@ public class Find3NAESAT3Color {
                 // let's check from the top-right of the adjacency matrix, as we are in an
                 // undirected graph
                 for (int j = i + 1; j < this.numVertices; j++) {
-                    if (this.adjacencyMatrix.get(i).get(j) > 0
-                            && this.vertexColors.get(i) == this.vertexColors.get(j)) {
+                    if (this.adjacencyMatrix[i][j] > 0
+                            && this.vertexColors[i] == this.vertexColors[j]) {
                         // this graph does not satisfy 3 color if two adjacent vertices are the same
                         // color
                         isSatisfied = false;
@@ -426,6 +432,24 @@ public class Find3NAESAT3Color {
             }
 
             return isSatisfied;
+        }
+
+        /**
+         * @author David Slay
+         */
+        public boolean isAdjacentToSameColor(int vertexIndex) {
+            boolean output = false; // not adjacent
+
+            for (int i = 0; i < this.numVertices; i++) {
+                if (i != vertexIndex && this.adjacencyMatrix[vertexIndex][i] > 0
+                        && this.vertexColors[vertexIndex] == this.vertexColors[i]) {
+                    // adjacent to the same color
+                    output = true;
+                    break;
+                }
+            }
+
+            return output;
         }
 
         /**
@@ -453,32 +477,30 @@ public class Find3NAESAT3Color {
         private boolean isConvertableTo3ColorHelper(int vertexIndex) {
             // base case: we have assigned a color to every vertex in the graph
             if (vertexIndex == this.numVertices) {
-                // see if this assignment satisfies 3Color
-                return is3ColorSatisfied();
+                // we have found an assignment for 3 color
+                return true;
             }
 
             // try setting this vertex to be green
-            this.vertexColors.set(vertexIndex, Color.GREEN);
-            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
-                // we found a solution
+            this.vertexColors[vertexIndex] = Color.GREEN;
+            if (!isAdjacentToSameColor(vertexIndex) && isConvertableTo3ColorHelper(vertexIndex + 1)) {
                 return true;
             }
 
             // try setting this vertex to be blue
-            this.vertexColors.set(vertexIndex, Color.BLUE);
-            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
-                // we found a solution
+            this.vertexColors[vertexIndex] = Color.BLUE;
+            if (!isAdjacentToSameColor(vertexIndex) && isConvertableTo3ColorHelper(vertexIndex + 1)) {
                 return true;
             }
 
             // try setting this vertex to be green
-            this.vertexColors.set(vertexIndex, Color.RED);
-            if (isConvertableTo3ColorHelper(vertexIndex + 1)) { // recurse
-                // we found a solution
+            this.vertexColors[vertexIndex] = Color.RED;
+            if (!isAdjacentToSameColor(vertexIndex) && isConvertableTo3ColorHelper(vertexIndex + 1)) {
                 return true;
             }
 
             // if none of these assignments work from this point, we backtrack
+            this.vertexColors[vertexIndex] = Color.NONE;
             return false;
         }
     }
