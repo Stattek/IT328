@@ -262,6 +262,7 @@ public class Find3Color {
             }
 
             // if none of these assignments work from this point, we backtrack
+            this.vertexColors[vertexIndex] = Color.NONE;
             return false;
         }
     }
