@@ -19,7 +19,7 @@ public class Find3Color {
      * 
      * @author David Slay
      */
-    public static class UndirectedGraph {
+    private static class UndirectedGraph {
         private final static int PRINT_THRESHOLD = 20;
         private static int nextGraphNum = 1; // start at 1
         private int graphNum;
@@ -76,7 +76,7 @@ public class Find3Color {
             this.numEdges = countEdges();
             this.vertexColors = new Color[this.numVertices];
 
-            // initialize colors list
+            // initialize colors array
             for (int i = 0; i < adjacencyMatrix.length; i++) {
                 // every vertex starts off with no color
                 this.vertexColors[i] = Color.NONE;
@@ -129,7 +129,6 @@ public class Find3Color {
 
             // only print the rest of this if we are not at or above the print threshold
             if (this.numVertices < PRINT_THRESHOLD && is3Colorable) {
-
                 String colorPlan = "  ";
                 for (int i = 0; i < this.vertexColors.length; i++) {
                     colorPlan += vertexColors[i];
@@ -166,39 +165,12 @@ public class Find3Color {
         }
 
         /**
-         * Checks that 3 color is satisfied for this UndirectedGraph.
-         * 3 Color is satisfied when no two vertices of the same color are adjacent to
-         * one another.
+         * Checks if the vertex at this index is adjacent to another vertex with the
+         * same color.
          * 
-         * @return True if 3 Color is satisfied, false otherwise.
-         * @author David Slay
-         */
-        public boolean is3ColorSatisfied() {
-            boolean isSatisfied = true; // satisfied until proven unsatisfied
-
-            for (int i = 0; i < this.numVertices; i++) {
-                // let's check from the top-right of the adjacency matrix, as we are in an
-                // undirected graph
-                for (int j = i + 1; j < this.numVertices; j++) {
-                    if (this.adjacencyMatrix[i][j] > 0
-                            && this.vertexColors[i] == this.vertexColors[j]) {
-                        // this graph does not satisfy 3 color if two adjacent vertices are the same
-                        // color
-                        isSatisfied = false;
-                        break;
-                    }
-                }
-
-                // break if not satisfied
-                if (!isSatisfied) {
-                    break;
-                }
-            }
-
-            return isSatisfied;
-        }
-
-        /**
+         * @param vertexIndex The index of the vertex to check.
+         * @return True if this vertex is adjacent to another vertex of the same color,
+         *         false otherwise.
          * @author David Slay
          */
         public boolean isAdjacentToSameColor(int vertexIndex) {
@@ -275,11 +247,14 @@ public class Find3Color {
             System.exit(1);
         }
 
+        String fileName = args[0];
+        System.out.println("** Find 3-Color plans for graphs in " + fileName + "\n");
+
         // read the graph from the file and save it
-        ArrayList<UndirectedGraph> graphs = readUndirectedGraphsFromFile(args[0]);
+        ArrayList<UndirectedGraph> graphs = readUndirectedGraphsFromFile(fileName);
 
         for (int i = 0; i < graphs.size(); i++) {
-            // see if all graphs are able to be 3 colorable
+            // see if all graphs are able to be 3 colorableargs
             UndirectedGraph curGraph = graphs.get(i);
             long startTime = System.currentTimeMillis();
             boolean is3Colorable = curGraph.isConvertableTo3Color();
@@ -295,7 +270,7 @@ public class Find3Color {
      * @return The ArrayList of UndirectedGraph objects read from file.
      * @author David Slay
      */
-    public static ArrayList<UndirectedGraph> readUndirectedGraphsFromFile(String fileName) {
+    private static ArrayList<UndirectedGraph> readUndirectedGraphsFromFile(String fileName) {
         ArrayList<UndirectedGraph> output = new ArrayList<>();
         File inputFile = new File(fileName);
         try {
