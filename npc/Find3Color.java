@@ -313,7 +313,15 @@ public class Find3Color {
                         // try to parse the values
                         try {
                             int currentVal = Integer.parseInt(curRowValues[j]);
-                            // push this element of the adjacency matrix to the current row
+                            if (currentVal != 0 || currentVal != 1) {
+                                System.err.println(
+                                        "Error: Invalid integer value at graph (expected 1 or 0 but got " + currentVal
+                                                + ") " + (output.size() + 1)
+                                                + ", row " + i + ", column " + j);
+                                System.exit(1);
+                            }
+
+                            // add this element
                             currentAdjacencyMatrix[i][j] = currentVal;
                         } catch (NumberFormatException nfe) {
                             System.err.println("Error: File does not have expected data at graph " + (output.size() + 1)
