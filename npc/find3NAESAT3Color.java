@@ -10,7 +10,7 @@ import java.util.Random;
  * Class to hold functionality for deciding if p is an elemeent of 3NAESAT by
  * reducing it to a three-color problem.
  */
-public class Find3NAESAT3Color {
+public class find3NAESAT3Color {
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -174,7 +174,8 @@ public class Find3NAESAT3Color {
         int numLiterals = formula.getNumLiterals();
         int numClauses = formula.getNumClauses();
 
-        // Total vertices = 1 base node + literals (positive and negative) + 3 nodes per clause
+        // Total vertices = 1 base node + literals (positive and negative) + 3 nodes per
+        // clause
         int totalVertices = 1 + (2 * numLiterals) + (3 * numClauses);
 
         // Initialize adjacency matrix without any edges
@@ -188,7 +189,7 @@ public class Find3NAESAT3Color {
         // Base node index
         int baseNode = 0;
 
-        //Add edges between base node and literals/negations
+        // Add edges between base node and literals/negations
         for (int i = 0; i < numLiterals; i++) {
             int literalVertex = 1 + i; // Literal node index
             int negLiteralVertex = 1 + numLiterals + i; // Negation node index
@@ -246,7 +247,6 @@ public class Find3NAESAT3Color {
         return adjacencyMatrix;
     }
 
-
     /*---------------------------------------------------------------------------------------------------------------------------------------- */
     /**
      * Represents an undirected graph with an adjacency matrix.
@@ -278,7 +278,7 @@ public class Find3NAESAT3Color {
              * Converts the enum to a string.
              *
              * @return The string representation of a Color for printing an
-             * UndirectedGraph.
+             *         UndirectedGraph.
              * @author David Slay
              */
             @Override
@@ -343,8 +343,8 @@ public class Find3NAESAT3Color {
          * Prints a graph with its information.
          *
          * @param timeElapsedMillis The time elapsed to generate a 3-color
-         * graph.
-         * @param is3Colorable If the graph is 3Colorable.
+         *                          graph.
+         * @param is3Colorable      If the graph is 3Colorable.
          * @author David Slay
          */
         private void printGraph(long timeElapsedMillis, boolean is3Colorable) {
@@ -470,7 +470,7 @@ public class Find3NAESAT3Color {
          * Helper function for finding solution to 3 Color problem.
          *
          * @param vertexIndex The current vertex index into the vertexColors
-         * ArrayList.
+         *                    ArrayList.
          * @return True if the graph is 3 colorable, false otherwise.
          * @author David Slay
          */

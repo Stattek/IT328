@@ -12,7 +12,7 @@ import java.util.Scanner;
  * 
  * @author David Slay
  */
-public class Find3Color {
+public class find3Color {
 
     /**
      * Represents an undirected graph with an adjacency matrix.
