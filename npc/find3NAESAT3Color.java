@@ -464,6 +464,7 @@ public class find3NAESAT3Color {
             return false;
         }
     }
+
     /**
      * Takes input from a file, and using the generateCNFFormula method, returns
      * an ArrayList of CNFFormula instances.
