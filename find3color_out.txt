@@ -1,0 +1,108 @@
+** Find 3-Color plans for graphs in ../graphs2025.txt
+
+G1:(|V|=5,|E|=6) (ms=0)
+  G B B R B
+G X 1 1 1 1
+B 1 X   1  
+B 1   X 1  
+R 1 1 1 X  
+B 1       X
+G2:(|V|=5,|E|=6) (ms=0)
+  G G B R B
+G X     1 1
+G   X 1 1  
+B   1 X 1  
+R 1 1 1 X 1
+B 1     1 X
+G3:(|V|=5,|E|=10) Not 3-colorable (ms=0)
+G4:(|V|=5,|E|=8) (ms=0)
+  G B G R R
+G X 1   1 1
+B 1 X 1 1 1
+G   1 X 1 1
+R 1 1 1 X  
+R 1 1 1   X
+G5:(|V|=5,|E|=10) Not 3-colorable (ms=0)
+G6:(|V|=10,|E|=18) (ms=0)
+  G G B B R B G B G R
+G X     1 1         1
+G   X 1 1   1       1
+B   1 X       1   1  
+B 1 1   X     1     1
+R 1       X 1 1 1    
+B   1     1 X 1      
+G     1 1 1 1 X 1    
+B         1   1 X   1
+G     1           X 1
+R 1 1   1       1 1 X
+G7:(|V|=10,|E|=22) Not 3-colorable (ms=0)
+G8:(|V|=10,|E|=23) Not 3-colorable (ms=0)
+G9:(|V|=10,|E|=22) Not 3-colorable (ms=0)
+G10:(|V|=10,|E|=19) (ms=0)
+  G B R R B R G R G G
+G X 1     1     1    
+B 1 X 1     1 1 1 1 1
+R   1 X   1   1   1  
+R       X 1   1     1
+B 1   1 1 X     1    
+R   1       X 1   1  
+G   1 1 1   1 X      
+R 1 1     1     X 1  
+G   1 1     1   1 X  
+G   1   1           X
+G11:(|V|=15,|E|=32) Not 3-colorable (ms=0)
+G12:(|V|=15,|E|=27) (ms=1)
+  G G B G B B G R B G B B B G R
+G X       1             1 1   1
+G   X                   1      
+B     X             1       1 1
+G       X 1     1 1     1     1
+B 1     1 X         1       1  
+B           X               1  
+G             X       1       1
+R       1       X   1 1     1  
+B       1         X            
+G     1   1     1   X 1   1   1
+B             1 1   1 X       1
+B 1 1   1               X      
+B 1                 1     X   1
+G     1   1 1   1           X 1
+R 1   1 1     1     1 1   1 1 X
+G13:(|V|=15,|E|=29) Not 3-colorable (ms=0)
+G14:(|V|=15,|E|=26) Not 3-colorable (ms=0)
+G15:(|V|=15,|E|=32) Not 3-colorable (ms=0)
+G16:(|V|=20,|E|=37) Not 3-colorable (ms=5)
+G17:(|V|=20,|E|=31) G G B B G G G G R R G G G R B R B R G B (ms=0)
+G18:(|V|=20,|E|=39) Not 3-colorable (ms=1)
+G19:(|V|=20,|E|=40) G B G G B R G G R R B G G B B R R B B B (ms=0)
+G20:(|V|=20,|E|=55) Not 3-colorable (ms=0)
+G21:(|V|=25,|E|=53) Not 3-colorable (ms=2)
+G22:(|V|=25,|E|=46) G G G G G B G R B B B B G B G G R R R B G R B G G (ms=0)
+G23:(|V|=25,|E|=40) G G G B G G B B G R B B B G B B B B B R R G G G R (ms=0)
+G24:(|V|=25,|E|=53) Not 3-colorable (ms=2)
+G25:(|V|=25,|E|=43) G G G B G G B B R G R R B B G B R G R G B B G B R (ms=0)
+G26:(|V|=30,|E|=63) Not 3-colorable (ms=68)
+G27:(|V|=30,|E|=47) G G G G G B B R G G G B B R G B G B G R G B G B R G R B R R (ms=0)
+G28:(|V|=30,|E|=67) Not 3-colorable (ms=9)
+G29:(|V|=30,|E|=71) Not 3-colorable (ms=4)
+G30:(|V|=30,|E|=57) G G G B G B R B G R G G B B R G B G B R R G G R R B R R B B (ms=1)
+G31:(|V|=35,|E|=44) G G B G B G G G B G G G B B R G G G R R B G B G R R G G B G R B R G G (ms=0)
+G32:(|V|=35,|E|=68) G G G G B B R G R B B R G B G G G G G R B B R G G G B B R G R B G B R (ms=5)
+G33:(|V|=35,|E|=60) G G G B G B G B G G B R R B B G R R B B B G B B G R G B G G G R R R R (ms=3)
+G34:(|V|=35,|E|=71) G B G R G G B G G G G G B B R G G B R B B B G B R G B R G G R B R R R (ms=94)
+G35:(|V|=35,|E|=56) G G G G G G B G B G G B B G G B R R B G G G B B G B R G R R R R R R B (ms=0)
+G36:(|V|=40,|E|=87) G G G G G B G R R G R R R R G R B G G B B B B G R B R B G R G G B B R G G B G R (ms=2)
+G37:(|V|=40,|E|=84) Not 3-colorable (ms=956)
+G38:(|V|=40,|E|=77) G G G B G G R G G G G B G G B B B R R R R G B G R G R B R G R B B B R B R B G G (ms=0)
+G39:(|V|=40,|E|=86) Not 3-colorable (ms=417)
+G40:(|V|=40,|E|=60) G G G G G G G B G G R G G B G G B B G R R G B B R R G G B R B B R G G R R G B B (ms=11)
+G41:(|V|=45,|E|=101) Not 3-colorable (ms=5218)
+G42:(|V|=45,|E|=101) Not 3-colorable (ms=2056)
+G43:(|V|=45,|E|=97) G G B B R B G B B R G B G R G G G G G G B B B B G B R R B B R R B R G R G R R G B G R R G (ms=1466)
+G44:(|V|=45,|E|=110) Not 3-colorable (ms=11079)
+G45:(|V|=45,|E|=104) Not 3-colorable (ms=757)
+G46:(|V|=50,|E|=106) G G B G G G B R R G G B R B B B B B G B R R G B R B G B R R R G B G B R R G G R G B R R B G B G G B (ms=608)
+G47:(|V|=50,|E|=123) Not 3-colorable (ms=634)
+G48:(|V|=50,|E|=123) Not 3-colorable (ms=6299)
+G49:(|V|=50,|E|=123) Not 3-colorable (ms=6720)
+G50:(|V|=50,|E|=110) G B R B G B G G G G R B G G G G G G G B G G B R R G R R B G G R R R B G R B B R B B R R R B R B B B (ms=250140)
