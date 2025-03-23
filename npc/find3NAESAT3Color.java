@@ -331,6 +331,66 @@ public class find3NAESAT3Color {
         }
 
         /**
+         * Prints a graph with its information.
+         * 
+         * @param timeElapsedMillis The time elapsed to generate a 3-color graph.
+         * @param is3Colorable      If the graph is 3Colorable.
+         * @author David Slay
+         */
+        private void printGraph(long timeElapsedMillis, boolean is3Colorable) {
+            System.out.print(
+                    "G" + this.graphNum + ":(|V|=" + this.numVertices + ",|E|=" + this.numEdges + ") ");
+            if (this.numVertices >= PRINT_THRESHOLD && is3Colorable) {
+                // print out this color plan since we are at or above the print threshold
+                String colorPlan = "";
+                for (int i = 0; i < this.vertexColors.length; i++) {
+                    colorPlan += vertexColors[i] + " "; // the last element will also have a space after it
+                }
+                System.out.print(colorPlan);
+            } else if (!is3Colorable) {
+                // if this graph is not 3 colorable, print that out
+                System.out.print("Not 3-colorable ");
+            }
+            System.out.println("(ms=" + timeElapsedMillis + ")");
+
+            // only print the rest of this if we are not at or above the print threshold
+            if (this.numVertices < PRINT_THRESHOLD && is3Colorable) {
+                String colorPlan = "  ";
+                for (int i = 0; i < this.vertexColors.length; i++) {
+                    colorPlan += vertexColors[i];
+
+                    // add space
+                    if (i != this.vertexColors.length - 1) {
+                        colorPlan += " ";
+                    }
+                }
+                System.out.println(colorPlan);
+
+                // iterate through rows
+                for (int i = 0; i < this.adjacencyMatrix.length; i++) {
+                    // print out the color first
+                    System.out.print(vertexColors[i] + " ");
+
+                    // iterate through columns
+                    for (int j = 0; j < this.adjacencyMatrix.length; j++) {
+                        if (i == j) {
+                            System.out.print("X");
+                        } else if (this.adjacencyMatrix[i][j] != 0) {
+                            System.out.print(this.adjacencyMatrix[i][j]);
+                        } else {
+                            System.out.print(" ");
+                        }
+
+                        if (j != this.adjacencyMatrix.length - 1) {
+                            System.out.print(" ");
+                        }
+                    }
+                    System.out.println();
+                }
+            }
+        }
+
+        /**
          * Checks if the vertex at this index is adjacent to another vertex with the
          * same color.
          * 
@@ -404,7 +464,6 @@ public class find3NAESAT3Color {
             return false;
         }
     }
-
     /**
      * Takes input from a file, and using the generateCNFFormula method, returns
      * an ArrayList of CNFFormula instances.
