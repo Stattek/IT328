@@ -11,7 +11,7 @@ import java.util.Random;
  * This class houses the main method for this program, as well as file handling,
  * CNFFormula parsing, and recursive backtracking/helper methods.
  */
-public class Find3NAESAT {
+public class find3NAESAT {
     /**
      * Main method
      * 
