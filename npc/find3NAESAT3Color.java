@@ -59,8 +59,6 @@ public class find3NAESAT3Color {
                 // 3NAESAT
                 if (is3Colorable) {
                     System.out.print("(" + duration + " ms) NAE certificate = [");
-                    // Get the color of the base node (X)
-                    UndirectedGraph.Color baseColor = graph.vertexColors[0];
 
                     // Determine the true color
                     UndirectedGraph.Color trueColor = graph.vertexColors[1];
@@ -247,14 +245,7 @@ public class find3NAESAT3Color {
         return adjacencyMatrix;
     }
 
-    /*---------------------------------------------------------------------------------------------------------------------------------------- */
-    /**
-     * Represents an undirected graph with an adjacency matrix.
-     *
-     * @author David Slay
-     */
-    public static class UndirectedGraph {
-
+    private static class UndirectedGraph {
         private final static int PRINT_THRESHOLD = 20;
         private static int nextGraphNum = 1; // start at 1
         private int graphNum;
@@ -265,20 +256,20 @@ public class find3NAESAT3Color {
 
         /**
          * Colors that vertices in the graph can be.
-         *
+         * 
          * @author David Slay
          */
         public enum Color {
             RED,
             BLUE,
             GREEN,
-            NONE,;
+            NONE,
+            ;
 
             /**
              * Converts the enum to a string.
-             *
-             * @return The string representation of a Color for printing an
-             *         UndirectedGraph.
+             * 
+             * @return The string representation of a Color for printing an UndirectedGraph.
              * @author David Slay
              */
             @Override
@@ -311,7 +302,7 @@ public class find3NAESAT3Color {
             this.numEdges = countEdges();
             this.vertexColors = new Color[this.numVertices];
 
-            // initialize colors list
+            // initialize colors array
             for (int i = 0; i < adjacencyMatrix.length; i++) {
                 // every vertex starts off with no color
                 this.vertexColors[i] = Color.NONE;
@@ -320,7 +311,7 @@ public class find3NAESAT3Color {
 
         /**
          * Counts the number of edges in the graph.
-         *
+         * 
          * @return The number of edges in the graph.
          * @author David Slay
          */
@@ -341,9 +332,8 @@ public class find3NAESAT3Color {
 
         /**
          * Prints a graph with its information.
-         *
-         * @param timeElapsedMillis The time elapsed to generate a 3-color
-         *                          graph.
+         * 
+         * @param timeElapsedMillis The time elapsed to generate a 3-color graph.
          * @param is3Colorable      If the graph is 3Colorable.
          * @author David Slay
          */
@@ -365,7 +355,6 @@ public class find3NAESAT3Color {
 
             // only print the rest of this if we are not at or above the print threshold
             if (this.numVertices < PRINT_THRESHOLD && is3Colorable) {
-
                 String colorPlan = "  ";
                 for (int i = 0; i < this.vertexColors.length; i++) {
                     colorPlan += vertexColors[i];
@@ -402,39 +391,12 @@ public class find3NAESAT3Color {
         }
 
         /**
-         * Checks that 3 color is satisfied for this UndirectedGraph. 3 Color is
-         * satisfied when no two vertices of the same color are adjacent to one
-         * another.
-         *
-         * @return True if 3 Color is satisfied, false otherwise.
-         * @author David Slay
-         */
-        public boolean is3ColorSatisfied() {
-            boolean isSatisfied = true; // satisfied until proven unsatisfied
-
-            for (int i = 0; i < this.numVertices; i++) {
-                // let's check from the top-right of the adjacency matrix, as we are in an
-                // undirected graph
-                for (int j = i + 1; j < this.numVertices; j++) {
-                    if (this.adjacencyMatrix[i][j] > 0
-                            && this.vertexColors[i] == this.vertexColors[j]) {
-                        // this graph does not satisfy 3 color if two adjacent vertices are the same
-                        // color
-                        isSatisfied = false;
-                        break;
-                    }
-                }
-
-                // break if not satisfied
-                if (!isSatisfied) {
-                    break;
-                }
-            }
-
-            return isSatisfied;
-        }
-
-        /**
+         * Checks if the vertex at this index is adjacent to another vertex with the
+         * same color.
+         * 
+         * @param vertexIndex The index of the vertex to check.
+         * @return True if this vertex is adjacent to another vertex of the same color,
+         *         false otherwise.
          * @author David Slay
          */
         public boolean isAdjacentToSameColor(int vertexIndex) {
@@ -454,11 +416,10 @@ public class find3NAESAT3Color {
 
         /**
          * Finds if there is a solution to the 3 Color problem with this
-         * UndirectedGraph. This is done by finding some solution where each
-         * vertex in the graph is assigned one of three colors (red, blue, and
-         * green), and no two vertices with the same color are allowed to be
-         * adjacent to one another.
-         *
+         * UndirectedGraph. This is done by finding some solution where each vertex in
+         * the graph is assigned one of three colors (red, blue, and green), and no two
+         * vertices with the same color are allowed to be adjacent to one another.
+         * 
          * @return True if the graph is 3 colorable, false otherwise.
          * @author David Slay
          */
@@ -468,9 +429,8 @@ public class find3NAESAT3Color {
 
         /**
          * Helper function for finding solution to 3 Color problem.
-         *
-         * @param vertexIndex The current vertex index into the vertexColors
-         *                    ArrayList.
+         * 
+         * @param vertexIndex The current vertex index into the vertexColors ArrayList.
          * @return True if the graph is 3 colorable, false otherwise.
          * @author David Slay
          */
@@ -504,7 +464,6 @@ public class find3NAESAT3Color {
             return false;
         }
     }
-
     /**
      * Takes input from a file, and using the generateCNFFormula method, returns
      * an ArrayList of CNFFormula instances.
