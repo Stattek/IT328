@@ -313,7 +313,7 @@ public class Find3Color {
                         // try to parse the values
                         try {
                             int currentVal = Integer.parseInt(curRowValues[j]);
-                            if (currentVal != 0 || currentVal != 1) {
+                            if (currentVal != 0 && currentVal != 1) {
                                 System.err.println(
                                         "Error: Invalid integer value at graph (expected 1 or 0 but got " + currentVal
                                                 + ") " + (output.size() + 1)
