@@ -19,24 +19,24 @@
         },
         {
             "type": "java",
-            "name": "Find3Color",
+            "name": "find3Color",
             "request": "launch",
-            "mainClass": "Find3Color",
+            "mainClass": "find3Color",
             "projectName": "IT328_739f37ca",
-            "args": "debug_graph.txt"
+            "args": "graphs2025.txt"
         },
         {
             "type": "java",
-            "name": "Find3NAESAT",
+            "name": "find3NAESAT",
             "request": "launch",
-            "mainClass": "Find3NAESAT",
+            "mainClass": "find3NAESAT",
             "projectName": "IT328_739f37ca"
         },
         {
             "type": "java",
-            "name": "Find3NAESAT3Color",
+            "name": "find3NAESAT3Color",
             "request": "launch",
-            "mainClass": "Find3NAESAT3Color",
+            "mainClass": "find3NAESAT3Color",
             "projectName": "IT328_739f37ca"
         }
     ]
